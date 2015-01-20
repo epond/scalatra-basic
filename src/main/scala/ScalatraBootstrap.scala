@@ -6,6 +6,6 @@ import sampleApi.controllers.GreetingController
 class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {
     // Mount servlets.
-    context.mount(new GreetingController, "/sample/*")
+    context.mount(new GreetingController, "/*")
   }
 } 
