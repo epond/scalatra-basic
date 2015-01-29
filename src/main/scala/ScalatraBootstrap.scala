@@ -1,24 +1,25 @@
 import javax.servlet.ServletContext
-import org.scalatra.{ScalatraServlet, LifeCycle}
+import org.scalatra._
 
 class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {
-    context.mount(new GreetingController, "/*")
-
-    context.mount(new AbstractController, "/article/*")
+    context.mount(Controllers, "/*")
   }
 }
 
-class GreetingController extends ScalatraServlet {
-  get("/") {
-    "Hello world"
-  }
-} 
+object Controllers extends ScalatraServlet with AbstractRoutes with FulltextRoutes with MyServiceImpl
 
-class AbstractController extends ScalatraServlet {
-  get("/(.*)".r) {
-    "Abstract"
+trait AbstractRoutes {
+  self: ScalatraServlet with MyService =>
+
+  get("/article/(.*)".r) {
+    "Abstract. " + getSomething
   }
+}
+
+trait FulltextRoutes {
+  self: ScalatraServlet with MyService =>
+
   get("""\/(.*)\/fulltext.html""".r) {
     "Fulltext"
   }
