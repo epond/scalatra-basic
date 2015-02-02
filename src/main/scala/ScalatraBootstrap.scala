@@ -7,13 +7,13 @@ class ScalatraBootstrap extends LifeCycle {
   }
 }
 
-object Controllers extends ScalatraServlet with AbstractRoutes with FulltextRoutes with MyServiceImpl
+object Controllers extends ScalatraServlet with AbstractRoutes with FulltextRoutes with MyServiceImpl with ProdMyDependencies
 
 trait AbstractRoutes {
-  self: ScalatraServlet with MyService =>
+  self: ScalatraServlet with MyService with MyDependencies =>
 
   get("/article/(.*)".r) {
-    "Abstract. " + getSomething
+    "Abstract. " + getSomething + ". " + squirrelCrusher.crush()
   }
 }
 

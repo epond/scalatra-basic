@@ -1,20 +1,32 @@
-import org.scalatest.FunSuiteLike
+import org.scalatest.{BeforeAndAfterEach, FunSuiteLike}
 import org.scalatra.ScalatraServlet
 import org.scalatra.test.scalatest._
+import org.mockito.Mockito._
+import org.scalatest.mock.MockitoSugar.mock
 
-class AbstractRoutesTest extends ScalatraSuite with FunSuiteLike {
+class AbstractRoutesTest extends ScalatraSuite with FunSuiteLike with BeforeAndAfterEach{
 
-   addServlet(TestAbstractRoutes, "/*")
+  val mockSquirrelCrusher = mock[SquirrelCrusher]
 
-   test("article abstract") {
+  trait TestMyDependencies extends MyDependencies {
+    override val squirrelCrusher: SquirrelCrusher = mockSquirrelCrusher
+  }
+
+  object TestAbstractRoutes extends ScalatraServlet with AbstractRoutes with TestMyService with TestMyDependencies
+
+  override protected def beforeEach() {
+    when(mockSquirrelCrusher.crush()).thenReturn("Squeak!")
+  }
+
+  addServlet(TestAbstractRoutes, "/*")
+
+  test("article abstract") {
      get("/article/abc") {
        status should equal (200)
-       body should include ("Abstract. something")
+       body should be ("Abstract. something. Squeak!")
      }
-   }
- }
-
-object TestAbstractRoutes extends ScalatraServlet with AbstractRoutes with TestMyService
+  }
+}
 
 trait TestMyService extends MyService {
   override val getSomething: String = "something"
