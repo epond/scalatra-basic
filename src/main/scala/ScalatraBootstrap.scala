@@ -4,6 +4,9 @@ import org.scalatra._
 class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext) {
     context.mount(Controllers, "/*")
+
+    println("========== Configured Scalatra with routes: ==========")
+    println(Controllers.routes.entryPoints mkString("\n"))
   }
 }
 
